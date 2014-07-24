@@ -1,10 +1,19 @@
 from flask import Flask, request
 import serial
 import atexit
+import ConfigParser
+import sys
+
+config = ConfigParser.ConfigParser()
+config.read("config.ini")
 
 app = Flask(__name__)
-ser = serial.Serial('/dev/tty.usbmodem14511', 9600)
-
+device = config.get('serial', 'device')
+try:
+    ser = serial.Serial(device, 9600)
+except:
+    print "Could not find device %s" % device
+    sys.exit()
 
 def is_ascii(string):
     try:
